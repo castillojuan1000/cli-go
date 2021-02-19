@@ -52,7 +52,7 @@ func OutputJSONall(allData *AllMetaData) {
 	}
 }
 
-//OutputJSONip outputs ip in JSON format
+//OutputJSONip outputs ip address  in JSON format
 func OutputJSONip(ip *string) {
 	data, _ := json.Marshal(ip)
 	err := ioutil.WriteFile("./ip.json", data, 0644)
@@ -75,7 +75,7 @@ func OutputJSONts(ts *string) {
 //OutputJSONuserName ouputs userName in JSON format
 func OutputJSONuserName(userName *string) {
 	data, _ := json.Marshal(userName)
-	err := ioutil.WriteFile("./timestamp.json", data, 0644)
+	err := ioutil.WriteFile("./userName.json", data, 0644)
 
 	if err != nil {
 		panic(err)
@@ -85,7 +85,7 @@ func OutputJSONuserName(userName *string) {
 //OutputJSONhomeDir ouputs userName in JSON format
 func OutputJSONhomeDir(homeDir *string) {
 	data, _ := json.Marshal(homeDir)
-	err := ioutil.WriteFile("./timestamp.json", data, 0644)
+	err := ioutil.WriteFile("./homeDir.json", data, 0644)
 
 	if err != nil {
 		panic(err)
