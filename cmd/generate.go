@@ -9,17 +9,20 @@ import (
 )
 
 // generateCmd represents the generate command
+//creates a 'struct' variable
 var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "returns metadata in json format",
-	Long:  `json generate [all | ip | ts | user | userdir]:  returns user's metadata`,
+	Long:  `json generate all:  returns user's metadata`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		//Metedata
 		timestamp := time.Now().Format(time.RFC850)
 		ip := utils.GetIPAdress().String()
 		userName := utils.GetUserData().Username
 		homeDir := utils.GetUserData().HomeDir
 
+		//Contains a collection of fileds with user's metadata
 		allMetaData := utils.AllMetaData{
 			UserName:  userName,
 			HomeDir:   homeDir,
@@ -27,33 +30,36 @@ var generateCmd = &cobra.Command{
 			IP:        ip,
 			Timestamp: timestamp}
 
-		if len(args) == 1 {
-			if args[0] == "all" || args[0] == "ip" || args[0] == "ts" || args[0] == "user" || args[0] == "userdir" {
-				switch args[0] {
-				case "all":
-					utils.OutputJSONall(&allMetaData)
+		// getting the flags value, their default value is false
+		tsFlagStatus, _ := cmd.Flags().GetBool("timestamp")
+		ipFlatStatus, _ := cmd.Flags().GetBool("ipaddress")
+		userFlagStatus, _ := cmd.Flags().GetBool("user")
+		homedirFlagStatus, _ := cmd.Flags().GetBool("homedir")
 
-				case "ip":
-					utils.OutputJSONip(&ip)
-
-				case "ts":
-					utils.OutputJSONts(&timestamp)
-
-				case "user":
-					utils.OutputJSONuserName(&userName)
-
-				case "userdir":
-					utils.OutputJSONhomeDir(&homeDir)
-
-				}
+		//if argument is 'all' it will output all metadata in json format and create a json file
+		if len(args) >= 1 {
+			if args[0] == "all" {
+				utils.OutputJSONall(&allMetaData)
 
 			} else {
-				fmt.Println("Argument does not exist, Please try one of the following: all | ip | ts | user | userdir")
+				fmt.Println("Argument does not exist, Please try : all ")
 			}
-		} else {
-			fmt.Println("Please choose from one of the following arguments: all | ip | ts | user | userdir")
+		}
+
+		//flag will output its value in json format
+		switch true {
+
+		case tsFlagStatus:
+			utils.OutputJSONts(&timestamp)
+		case ipFlatStatus:
+			utils.OutputJSONip(&ip)
+		case homedirFlagStatus:
+			utils.OutputJSONhomeDir(&homeDir)
+		case userFlagStatus:
+			utils.OutputJSONuserName(&userName)
 
 		}
+
 	},
 }
 
@@ -68,5 +74,8 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// generateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	generateCmd.Flags().BoolP("timestamp", "t", false, "outputs timestamp into JSON format")
+	generateCmd.Flags().BoolP("ipaddress", "i", false, "outputs ip address into JSON format")
+	generateCmd.Flags().BoolP("user", "u", false, "outputs user name into JSON format")
+	generateCmd.Flags().BoolP("homedir", "d", false, "outputs homedir  into JSON format")
 }
